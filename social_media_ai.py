@@ -51,6 +51,16 @@ def calculate_conversation_scores(user):
 
     user_conversations['conversation_score'] = predicted_scores
 
-    return user_conversations
+    # Aggregate conversation scores with other users
+    # Group by the user and the other user they communicated with
+    user_conversations['other_user'] = user_conversations.apply(lambda row: row['receiver_id'] if row['sender_id'] == user else row['sender_id'], axis=1)
+
+    # Group by the other users and sum the conversation scores
+    total_scores = user_conversations.groupby('other_user')['conversation_score'].sum().reset_index()
+
+    # Return the new DataFrame with the user and their total conversation score with others
+    total_scores.columns = ['other_user', 'total_conversation_score'] 
+
+    return total_scores
 
 print(calculate_conversation_scores(1))
