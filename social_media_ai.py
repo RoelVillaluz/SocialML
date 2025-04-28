@@ -26,6 +26,9 @@ def calculate_conversation_scores(user):
     # Filter conversations of the user
     user_conversations = messages_df[(messages_df['sender_id'] == user) | (messages_df['receiver_id'] == user)].copy()
 
+    # Remove self-messages (user talking to themselves)
+    user_conversations = user_conversations[user_conversations['sender_id'] != user_conversations['receiver_id']]
+    
     # Calculate sentiment and length features
     user_conversations['sentiment'] = user_conversations['content'].apply(lambda x: TextBlob(x).sentiment.polarity)
     user_conversations['length'] = user_conversations['content'].apply(len)
