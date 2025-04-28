@@ -73,9 +73,18 @@ def calculate_conversation_scores(user):
 
     # Group by the other users and sum the conversation scores
     total_scores = user_conversations.groupby('other_user')['conversation_score'].sum().reset_index()
-
-    # Return the new DataFrame with the user and their total conversation score with others
     total_scores.columns = ['other_user', 'total_conversation_score'] 
+
+    # Merge with avg reply time
+    total_scores = total_scores.merge(avg_reply_time[['other_user', 'avg_reply_seconds']], on='other_user', how='left')
+
+    # Merge with user_df to get the name of the other user
+    total_scores = total_scores.merge(user_df[['id', 'name']], left_on='other_user', right_on='id', how='left')
+    total_scores = total_scores.drop(columns=['id']) # Remove redundant ID column
+    total_scores = total_scores.rename(columns={'name': 'other_user_name'})
+
+    # Reorder for clarity
+    total_scores = total_scores[['other_user', 'other_user_name', 'avg_reply_seconds', 'total_conversation_score']]
 
     return total_scores
 
