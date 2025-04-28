@@ -23,6 +23,9 @@ def get_distances(user):
     return other_users[['id', 'distance']]
 
 def calculate_conversation_scores(user):
+    # Get name of user
+    user_name = user_df.iloc[user - 1]['name'] # Minus one so that id matches index
+
     # Filter conversations of the user
     user_conversations = messages_df[(messages_df['sender_id'] == user) | (messages_df['receiver_id'] == user)].copy()
 
@@ -89,7 +92,7 @@ def calculate_conversation_scores(user):
     # Reorder for clarity
     total_scores = total_scores[['other_user', 'other_user_name', 'avg_reply_seconds', 'total_conversation_score']]
 
-    return total_scores
+    return f"Conversation scores for {user_name}\n{total_scores}"
 
 def calculate_user_interaction_scores(user):
     return
