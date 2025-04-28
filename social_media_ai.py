@@ -34,11 +34,31 @@ def calculate_conversation_scores(user):
     # Set the conversation_score to NaN initially
     user_conversations['conversation_score'] = np.nan
 
+    # Group by the user and the other user they communicated with
+    user_conversations['other_user'] = user_conversations.apply(lambda row: row['receiver_id'] if row['sender_id'] == user else row['sender_id'], axis=1)
+
+    # Calculate average time between replies between users
+    user_conversations['date_sent'] = pd.to_datetime(user_conversations['date_sent']) # Convert date_sent to datetime
+    user_conversations = user_conversations.sort_values(by='date_sent')
+
+    # Calculate time differences between replies for each pair
+    user_conversations['time_diff'] = user_conversations.groupby('other_user')['date_sent'].diff().dt.total_seconds()
+
+    # Now compute the average time between replies per user pair
+    avg_reply_time = user_conversations.groupby('other_user')['time_diff'].mean().reset_index()
+    avg_reply_time.columns = ['other_user', 'avg_reply_seconds']
+
+    # Invert time to make faster replies have higher values
+    avg_reply_time['inv_reply_time'] = 1 / avg_reply_time['avg_reply_seconds']
+
+    # Merge inverse reply time back to each message
+    user_conversations = user_conversations.merge(avg_reply_time[['other_user', 'inv_reply_time']], on='other_user', how='left')
+
     scaler = StandardScaler()
     # Don't scale sentiment anymore since it's already scaled from -1 (negative) to 1 (positive)
-    user_conversations[['length', 'weighted_sentiment']] = scaler.fit_transform(user_conversations[['length', 'weighted_sentiment']])
+    user_conversations[['length', 'weighted_sentiment', 'inv_reply_time']] = scaler.fit_transform(user_conversations[['length', 'weighted_sentiment', 'inv_reply_time']])
 
-    X = user_conversations[['sentiment', 'length', 'weighted_sentiment']]
+    X = user_conversations[['sentiment', 'length', 'weighted_sentiment', 'inv_reply_time']]
 
     y = user_conversations['sentiment'] 
 
@@ -51,10 +71,6 @@ def calculate_conversation_scores(user):
 
     user_conversations['conversation_score'] = predicted_scores
 
-    # Aggregate conversation scores with other users
-    # Group by the user and the other user they communicated with
-    user_conversations['other_user'] = user_conversations.apply(lambda row: row['receiver_id'] if row['sender_id'] == user else row['sender_id'], axis=1)
-
     # Group by the other users and sum the conversation scores
     total_scores = user_conversations.groupby('other_user')['conversation_score'].sum().reset_index()
 
@@ -62,5 +78,8 @@ def calculate_conversation_scores(user):
     total_scores.columns = ['other_user', 'total_conversation_score'] 
 
     return total_scores
+
+def calculate_user_interaction_scores(user):
+    return
 
 print(calculate_conversation_scores(1))
