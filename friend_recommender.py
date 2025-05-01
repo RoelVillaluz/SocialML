@@ -95,6 +95,10 @@ def calculate_conversation_scores(user):
     return f"Conversation scores for {user_name}\n{total_scores}"
 
 def calculate_user_interaction_scores(user):
+    # user_interactions = posts_df
+    mapping = {'like': 1, 'comment': 2, 'share': 3}
+
+    encoded_interactions = posts_df.map(posts_df['interactions']['type'])
     return
 
 print(calculate_conversation_scores(1))
