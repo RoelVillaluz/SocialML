@@ -21,6 +21,20 @@ users = {
                 [10]]        # josh
 }
 
+pages = {
+    "id": [101, 102, 103, 104, 105, 106, 107],
+    "name": ["TechWorld", "FoodiesHub", "TravelDiaries", "MovieClub", "GameZone", "MusicVibes", "FitnessFirst"],
+    "category": [
+        ["Technology", "Gadgets"],
+        ["Food", "Recipes"],
+        ["Travel", "Photography"],
+        ["Movies", "Entertainment"],
+        ["Gaming", "Esports"],
+        ["Music", "Concerts"],
+        ["Fitness", "Health"]
+    ]
+}
+
 posts = {
     "id": list(range(201, 231)),
     "author_type": [
@@ -111,5 +125,6 @@ messages = {
 
 
 user_df = pd.DataFrame(users)
+pages_df = pd.DataFrame(pages)
 posts_df = pd.DataFrame(posts)
 messages_df = pd.DataFrame(messages)
