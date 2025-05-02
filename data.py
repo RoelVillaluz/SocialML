@@ -22,8 +22,23 @@ users = {
 }
 
 posts = {
-    "id": [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120],
-    "author_id": [2, 4, 11, 5, 5, 1, 2, 6, 8, 10, 7, 9, 3, 1, 2, 4, 10, 11, 6, 2],
+    "id": list(range(201, 231)),
+    "author_type": [
+        "user", "page", "user", "user", "page",
+        "user", "user", "page", "user", "user",
+        "page", "user", "user", "page", "user",
+        "page", "user", "page", "page", "user",
+        "user", "page", "user", "user", "page",
+        "user", "page", "user", "page", "user"
+    ],
+    "author_id": [
+        2, 101, 11, 5, 102,
+        1, 6, 103, 8, 10,
+        104, 3, 7, 105, 9,
+        106, 11, 107, 102, 2,
+        5, 101, 10, 6, 103,
+        8, 104, 1, 105, 9
+    ],
     "interactions": [
         [{"user_id": 1, "type": "like"}, {"user_id": 2, "type": "comment"}],
         [{"user_id": 3, "type": "share"}],
@@ -44,7 +59,17 @@ posts = {
         [{"user_id": 7, "type": "comment"}],
         [],
         [{"user_id": 2, "type": "like"}, {"user_id": 8, "type": "share"}],
-        [{"user_id": 1, "type": "comment"}]
+        [{"user_id": 1, "type": "comment"}],
+        [{"user_id": 3, "type": "like"}],
+        [{"user_id": 5, "type": "share"}, {"user_id": 7, "type": "comment"}],
+        [],
+        [{"user_id": 4, "type": "like"}],
+        [{"user_id": 2, "type": "share"}],
+        [{"user_id": 8, "type": "like"}],
+        [],
+        [{"user_id": 9, "type": "comment"}],
+        [{"user_id": 5, "type": "share"}],
+        [{"user_id": 6, "type": "like"}]
     ]
 }
 
